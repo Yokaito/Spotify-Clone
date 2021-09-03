@@ -1,1 +1,1 @@
-# Spotify-Clone
+# template-typescript-react
