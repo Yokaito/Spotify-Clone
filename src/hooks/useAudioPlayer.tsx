@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Time from 'functions/time'
-import { Dispatch } from 'hoist-non-react-statics/node_modules/@types/react'
 import { useState, useEffect } from 'react'
 
 interface useAudioPlayerResult {
@@ -8,8 +7,8 @@ interface useAudioPlayerResult {
   currentTime: string
   currentPercent: number
   playing: boolean
-  setPlaying: Dispatch<boolean>
-  setClickedTime: Dispatch<null>
+  setPlaying: any
+  setClickedTime: any
 }
 
 const useAudioPlayer = (): useAudioPlayerResult => {
