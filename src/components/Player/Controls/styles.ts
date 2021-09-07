@@ -32,35 +32,84 @@ export const ProgressValues = styled.span`
   line-height: 16px;
   text-transform: none;
 `
+type ProgressBarFilledProps = {
+  currentProgress: number
+  dragging?: boolean
+}
 
-export const ProgressBar = styled.div`
+export const ProgressBarFilledContainer = styled.div`
+  overflow: hidden;
   width: 100%;
   height: 4px;
   border-radius: 2px;
   background-color: #535353;
-`
 
-type ProgressBarFilledProps = {
-  currentProgress: number
-}
+  :active {
+    cursor: grabbing;
+  }
+
+  :-moz-drag-over {
+    cursor: grabbing;
+  }
+`
 
 export const ProgressBarFilled = styled.div.attrs<ProgressBarFilledProps>(
   ({ currentProgress }) => ({
     style: {
-      width: `${currentProgress}%`
+      transform: `translateX(${currentProgress}%)`
     }
   })
 )<ProgressBarFilledProps>`
   height: 4px;
   border-radius: 2px;
   background-color: #b3b3b3;
-  transition: width 0.3s ease-in;
+  position: relative;
+  width: 100%;
+  transform: translateY(0);
 `
-/*
-export const ProgressBarFilled = styled.div<ProgressBarFilledProps>`
-  width: ${props => `${props.currentTime}%`};
-  height: 4px;
+
+export const ProgressBarFilledCircle = styled.div.attrs<ProgressBarFilledProps>(
+  ({ currentProgress }) => ({
+    style: {
+      left: `${currentProgress}%`
+    }
+  })
+)<ProgressBarFilledProps>`
+  width: 12px;
+  height: 12px;
   border-radius: 2px;
-  background-color: #b3b3b3;
-  transition: width 0.3s ease-in;
-` */
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
+  position: absolute;
+  top: -2px;
+  z-index: 100;
+  display: none;
+  cursor: grab;
+
+  :active {
+    cursor: grabbing;
+  }
+
+  :-moz-drag-over {
+    cursor: grabbing;
+  }
+`
+
+export const ProgressBar = styled.div`
+  width: 100%;
+  height: 8px;
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  :hover {
+    ${ProgressBarFilled} {
+      background-color: #1db954;
+    }
+    ${ProgressBarFilledCircle} {
+      display: block;
+    }
+  }
+`

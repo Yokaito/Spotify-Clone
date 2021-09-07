@@ -64,7 +64,7 @@ export const InformationMusic = styled.div`
   flex-direction: column;
   justify-content: center;
   margin: 0 14px;
-  max-width: 150px;
+  max-width: 170px;
 `
 
 export const InformationMusicName = styled.div`

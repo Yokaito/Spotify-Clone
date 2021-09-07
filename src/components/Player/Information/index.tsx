@@ -10,21 +10,33 @@ import {
   InformationMusicName,
   InformationMusicLike
 } from './styles'
-import ThumbNail from 'assets/thumb.jpg'
 import Svg from 'assets/svg'
+import { getCurrentSong } from 'store/slices/currentSongSlice'
+import { useAppSelector } from 'store/hooks'
 
 export const Information: React.FC = () => {
+  const { image, title, artists } = useAppSelector(state =>
+    getCurrentSong(state)
+  )
+
   return (
     <>
       <InformationStyled>
         <InformationImage>
           <InformationImageButtonExpand>⋀</InformationImageButtonExpand>
-          <Image src={ThumbNail} />
+          <Image src={`audio/` + process.env.PUBLIC_URL + `${image}`} />
         </InformationImage>
         <InformationMusic>
-          <InformationMusicName>GO (feat. Juice WRLD)</InformationMusicName>
+          <InformationMusicName>{title}</InformationMusicName>
           <InformationMusicArtist>
-            The Kid Laroi, Juice WRLD
+            {artists.map((artist, index) => {
+              return (
+                <span key={index}>
+                  {artist}
+                  {index !== artists.length - 1 ? ', ' : ''}
+                </span>
+              )
+            })}
           </InformationMusicArtist>
         </InformationMusic>
         <InformationMusicLike>

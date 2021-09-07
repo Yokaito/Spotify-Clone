@@ -1,31 +1,66 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import Time from 'functions/time'
 import { useState, useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from 'store/hooks'
+import {
+  setDuration as setDurationRedux,
+  setPlaying as setPlayingRedux,
+  getCurrentSong as getCurrentSongRedux
+} from 'store/slices/currentSongSlice'
+import { getConfigClient } from 'store/slices/configClientSlice'
+import Time from 'functions/time'
 
 interface useAudioPlayerResult {
   duration: string
   currentTime: string
   currentPercent: number
   playing: boolean
-  setPlaying: any
-  setClickedTime: any
+  setPlayingVerify: (actionPlaying: boolean) => void
+  setCustomTime: (percentage: number) => void
 }
 
-const useAudioPlayer = (): useAudioPlayerResult => {
+const useAudioPlayer = (url: string): useAudioPlayerResult => {
+  const [audio] = useState<HTMLAudioElement>(new Audio())
+  const [playing, setPlaying] = useState(false)
   const [duration, setDuration] = useState('')
   const [currentTime, setCurrentTime] = useState('')
   const [currentPercent, setCurrentPercent] = useState(0)
-  const [playing, setPlaying] = useState(false)
-  const [clickedTime, setClickedTime] = useState(null)
+  const dispatch = useAppDispatch()
+  const configClient = useAppSelector(state => getConfigClient(state))
+  const currentSong = useAppSelector(state => getCurrentSongRedux(state))
+
+  const setPlayingVerify = (actionPlaying: boolean) => {
+    if (audio.readyState === 4) {
+      dispatch(setPlayingRedux(actionPlaying))
+      setPlaying(actionPlaying)
+    }
+  }
+  useEffect(() => {
+    audio.currentTime = currentSong.currentTime
+  }, [currentSong.currentTime])
 
   useEffect(() => {
-    const audio: HTMLAudioElement | any = document.getElementById('audio')
+    const { volume, muted, repeat } = configClient
+    audio.volume = volume
+    audio.muted = muted
+    audio.loop = repeat
+  }, [configClient])
 
-    audio.volume = 0.1
+  useEffect(() => {
+    audio.src = process.env.PUBLIC_URL + `/audio${url}`
+    setDuration('')
+    setCurrentTime('')
+    setCurrentPercent(0)
+    audio.load()
+  }, [url])
 
+  useEffect(() => {
+    playing ? audio.play() : audio.pause()
+  }, [playing, url])
+
+  useEffect(() => {
     const setAudioData = () => {
       setDuration(Time.transformTime(audio?.duration))
       setCurrentTime(Time.transformTime(audio?.currentTime))
+      dispatch(setDurationRedux(audio?.duration))
     }
 
     const setAudioTime = () => {
@@ -36,26 +71,48 @@ const useAudioPlayer = (): useAudioPlayerResult => {
     audio.addEventListener('loadeddata', setAudioData)
     audio.addEventListener('timeupdate', setAudioTime)
 
-    playing ? audio.play() : audio.pause()
-
-    if (clickedTime && clickedTime !== currentTime) {
-      audio.currentTime = clickedTime
-      setClickedTime(null)
-    }
-
     return () => {
       audio.removeEventListener('loadeddata', setAudioData)
       audio.removeEventListener('timeupdate', setAudioTime)
     }
   })
 
+  const setCustomTime = (percentage: number) => {
+    audio.currentTime = Time.getSeconds(percentage, audio.duration)
+  }
+
+  /* useEffect(() => {
+    const setNextSong = () => {
+      dispatch(setSong('music.mp3'))
+    }
+
+    audio.addEventListener('ended', setNextSong)
+
+    return () => {
+      audio.removeEventListener('ended', setNextSong)
+    }
+  }) */
+
+  useEffect(() => {
+    const saveAudioSettingsLocal = () => {
+      localStorage.setItem('currentTime', audio.currentTime.toString())
+      localStorage.setItem('volume', audio.volume.toString())
+    }
+
+    window.addEventListener('beforeunload', saveAudioSettingsLocal)
+
+    return () => {
+      window.removeEventListener('beforeunload', saveAudioSettingsLocal)
+    }
+  }, [])
+
   return {
     duration,
     currentTime,
     currentPercent,
     playing,
-    setPlaying,
-    setClickedTime
+    setPlayingVerify,
+    setCustomTime
   }
 }
 
