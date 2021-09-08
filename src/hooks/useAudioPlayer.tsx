@@ -87,6 +87,8 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
     const saveAudioSettingsLocal = () => {
       localStorage.setItem('currentTime', audio.currentTime.toString())
       localStorage.setItem('volume', audio.volume.toString())
+      localStorage.setItem('muted', audio.muted.toString())
+      localStorage.setItem('repeat', audio.loop.toString())
     }
 
     window.addEventListener('beforeunload', saveAudioSettingsLocal)

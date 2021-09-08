@@ -1,4 +1,7 @@
+import axios from 'axios'
 import React from 'react'
+import { useAppDispatch } from 'store/hooks'
+import { setCurrentSong } from 'store/slices/currentSongSlice'
 
 import { ButtonChangeMusicStyled } from './styles'
 
@@ -11,8 +14,15 @@ export const ButtonChangeMusic: React.FC<ButtonChangeMusicProps> = ({
   previous,
   next
 }) => {
+  const dispatch = useAppDispatch()
+  const handleClick = async () => {
+    const id = next ? 1 : 2
+    const response = await axios.get(`/api/songs/${id}`)
+    dispatch(setCurrentSong({ ...response.data.song }))
+  }
+
   return (
-    <ButtonChangeMusicStyled>
+    <ButtonChangeMusicStyled onClick={handleClick}>
       {next && (
         <svg role="img" height="16" width="16" viewBox="0 0 16 16">
           <path

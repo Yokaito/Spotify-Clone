@@ -15,7 +15,7 @@ interface CurrentSongState {
 const initialState: CurrentSongState = {
   id: 1,
   url: '/2/music.mp3',
-  image: '/2/songImage.jpg',
+  image: '/2/image.jpg',
   duration: 0,
   currentTime: localStorage.getItem('currentTime')
     ? parseInt(localStorage.getItem('currentTime') || '1')
@@ -31,7 +31,9 @@ export const currentSongSlice = createSlice({
   reducers: {
     setCurrentSong: (
       state,
-      action: PayloadAction<Omit<CurrentSongState, 'duration' | 'playing'>>
+      action: PayloadAction<
+        Omit<CurrentSongState, 'duration' | 'playing' | 'currentTime'>
+      >
     ) => {
       return {
         ...state,
