@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 export const ExtraControlsStyled = styled.div`
   display: flex;
-  min-width: 180px;
-  width: 30%;
+  width: 350px;
+  min-width: 150px;
+  max-width: 350px;
 `

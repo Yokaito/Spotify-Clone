@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'store/hooks'
 import {
   setDuration as setDurationRedux,
-  setPlaying as setPlayingRedux,
   getCurrentSong as getCurrentSongRedux
 } from 'store/slices/currentSongSlice'
 import { getConfigClient } from 'store/slices/configClientSlice'
@@ -12,14 +11,11 @@ interface useAudioPlayerResult {
   duration: string
   currentTime: string
   currentPercent: number
-  playing: boolean
-  setPlayingVerify: (actionPlaying: boolean) => void
   setCustomTime: (percentage: number) => void
 }
 
 const useAudioPlayer = (url: string): useAudioPlayerResult => {
   const [audio] = useState<HTMLAudioElement>(new Audio())
-  const [playing, setPlaying] = useState(false)
   const [duration, setDuration] = useState('')
   const [currentTime, setCurrentTime] = useState('')
   const [currentPercent, setCurrentPercent] = useState(0)
@@ -27,12 +23,6 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
   const configClient = useAppSelector(state => getConfigClient(state))
   const currentSong = useAppSelector(state => getCurrentSongRedux(state))
 
-  const setPlayingVerify = (actionPlaying: boolean) => {
-    if (audio.readyState === 4) {
-      dispatch(setPlayingRedux(actionPlaying))
-      setPlaying(actionPlaying)
-    }
-  }
   useEffect(() => {
     audio.currentTime = currentSong.currentTime
   }, [currentSong.currentTime])
@@ -53,8 +43,8 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
   }, [url])
 
   useEffect(() => {
-    playing ? audio.play() : audio.pause()
-  }, [playing, url])
+    currentSong.playing ? audio.play() : audio.pause()
+  }, [currentSong.playing, url])
 
   useEffect(() => {
     const setAudioData = () => {
@@ -110,8 +100,6 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
     duration,
     currentTime,
     currentPercent,
-    playing,
-    setPlayingVerify,
     setCustomTime
   }
 }

@@ -11,7 +11,7 @@ interface ConfigClientState {
 const initialState: ConfigClientState = {
   volume: localStorage.getItem('volume')
     ? parseFloat(localStorage.getItem('volume') || '1')
-    : 1,
+    : 0.3,
   muted: false,
   repeat: false,
   shuffle: false
