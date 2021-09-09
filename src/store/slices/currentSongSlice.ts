@@ -13,15 +13,15 @@ interface CurrentSongState {
 }
 
 const initialState: CurrentSongState = {
-  id: 1,
-  url: '/2/music.mp3',
-  image: '/2/image.jpg',
+  id: 0,
+  url: '',
+  image: '',
   duration: 0,
   currentTime: localStorage.getItem('currentTime')
     ? parseInt(localStorage.getItem('currentTime') || '1')
     : 0,
-  title: 'STAY (with Justin Bieber)',
-  artists: ['The Kid LAROI', 'Justin Bieber'],
+  title: '',
+  artists: [],
   playing: false
 }
 
@@ -35,6 +35,7 @@ export const currentSongSlice = createSlice({
         Omit<CurrentSongState, 'duration' | 'playing' | 'currentTime'>
       >
     ) => {
+      localStorage.setItem('currentSongId', action.payload.id.toString())
       return {
         ...state,
         id: action.payload.id,

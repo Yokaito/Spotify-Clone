@@ -3,7 +3,8 @@ import { createServer, Model } from 'miragejs'
 export default function () {
   createServer({
     models: {
-      song: Model
+      song: Model,
+      playlist: Model
     },
 
     seeds(server) {
@@ -21,11 +22,24 @@ export default function () {
         title: 'STAY (with Justin Bieber)',
         artists: ['The Kid LAROI', 'Justin Bieber']
       })
+      server.create('playlist', {
+        id: 1,
+        title: 'My Playlist',
+        songs: [1, 2]
+      })
     },
 
     routes() {
       this.get('/api/songs', schema => {
         return schema.songs.all()
+      })
+
+      this.get('/api/playlists', schema => {
+        return schema.playlists.all()
+      })
+
+      this.get('/api/playlists/:id', (schema, request) => {
+        return schema.playlists.find(request.params.id)
       })
 
       this.get('/api/songs/:id', (schema, request) => {

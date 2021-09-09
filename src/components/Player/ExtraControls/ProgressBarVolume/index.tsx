@@ -1,4 +1,3 @@
-import { type } from 'os'
 import React from 'react'
 import { useAppDispatch, useAppSelector } from 'store/hooks'
 import { setVolume, getConfigClient } from 'store/slices/configClientSlice'
@@ -64,21 +63,18 @@ export const ProgressBarVolume: React.FC = () => {
 
   return (
     <>
-      <ProgressBarVolumeStyled draggable={true}>
+      <ProgressBarVolumeStyled>
         <ProgressBarVolumeContainer
           ref={progressBarVolumeRef}
           onClick={getPositionClick}
-          draggable={true}
         >
           <ProgressBarVolumeFilled
-            draggable={true}
             currentProgress={
               (dragging ? percentageDrag : getPercentage(volume, 1)) - 100
             }
           />
         </ProgressBarVolumeContainer>
         <ProgressBarVolumeFilledCircle
-          draggable={true}
           onDragEnterCapture={() => setDragging(true)}
           onDrag={getDragPosition}
           onDragEnd={getDragEnd}

@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import currentSong from 'store/slices/currentSongSlice'
 import configClient from 'store/slices/configClientSlice'
+import currentPlaylist from 'store/slices/currentPlaylistSlice'
 
 const store = configureStore({
   reducer: {
     currentSong,
-    configClient
+    configClient,
+    currentPlaylist
   }
 })
 

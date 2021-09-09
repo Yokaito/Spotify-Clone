@@ -16,7 +16,7 @@ export const ButtonChangeMusic: React.FC<ButtonChangeMusicProps> = ({
 }) => {
   const dispatch = useAppDispatch()
   const handleClick = async () => {
-    const id = next ? 1 : 2
+    const id = next ? 2 : 1
     const response = await axios.get(`/api/songs/${id}`)
     dispatch(setCurrentSong({ ...response.data.song }))
   }

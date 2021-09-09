@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'store/hooks'
 import {
   setDuration as setDurationRedux,
-  getCurrentSong as getCurrentSongRedux
+  getCurrentSong as getCurrentSongRedux,
+  setCurrentSong as setCurrentSongRedux
 } from 'store/slices/currentSongSlice'
 import { getConfigClient } from 'store/slices/configClientSlice'
+import { getCurrentPlaylist } from 'store/slices/currentPlaylistSlice'
 import Time from 'functions/time'
+import axios from 'axios'
 
 interface useAudioPlayerResult {
   duration: string
@@ -22,6 +25,20 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
   const dispatch = useAppDispatch()
   const configClient = useAppSelector(state => getConfigClient(state))
   const currentSong = useAppSelector(state => getCurrentSongRedux(state))
+  const currentPlaylist = useAppSelector(state => getCurrentPlaylist(state))
+
+  useEffect(() => {
+    async function fetchData() {
+      if (currentPlaylist.id !== 0) {
+        const localSongId = localStorage.getItem('currentSongId') || 0
+        const id = localSongId !== 0 ? localSongId : currentPlaylist.songs[0].id
+
+        const response = await axios.get(`/api/songs/${id}`)
+        dispatch(setCurrentSongRedux({ ...response.data.song }))
+      }
+    }
+    fetchData()
+  }, [currentPlaylist])
 
   useEffect(() => {
     audio.currentTime = currentSong.currentTime
@@ -71,9 +88,14 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
     audio.currentTime = Time.getSeconds(percentage, audio.duration)
   }
 
-  /* useEffect(() => {
-    const setNextSong = () => {
-      dispatch(setSong('music.mp3'))
+  useEffect(() => {
+    async function setNextSong() {
+      const idPlus = currentSong.id
+      const nextSong = currentPlaylist.songs[idPlus]
+      if (nextSong) {
+        const response = await axios.get(`/api/songs/${nextSong.id}`)
+        dispatch(setCurrentSongRedux({ ...response.data.song }))
+      }
     }
 
     audio.addEventListener('ended', setNextSong)
@@ -81,7 +103,7 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
     return () => {
       audio.removeEventListener('ended', setNextSong)
     }
-  }) */
+  })
 
   useEffect(() => {
     const saveAudioSettingsLocal = () => {
