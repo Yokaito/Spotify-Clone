@@ -1,10 +1,18 @@
 import React from 'react'
+import ProgressBarVolume from './ProgressBarVolume'
 
-import { ExtraControlsStyled } from './styles'
+import { ExtraControlsStyled, ExtraControlsContainer } from './styles'
+import VolumeIcon from './VolumeIcon'
+
 export const ExtraControls: React.FC = () => {
   return (
     <>
-      <ExtraControlsStyled>Teste</ExtraControlsStyled>
+      <ExtraControlsStyled>
+        <ExtraControlsContainer>
+          <VolumeIcon />
+          <ProgressBarVolume />
+        </ExtraControlsContainer>
+      </ExtraControlsStyled>
     </>
   )
 }

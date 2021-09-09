@@ -11,10 +11,16 @@ interface ConfigClientState {
 const initialState: ConfigClientState = {
   volume: localStorage.getItem('volume')
     ? parseFloat(localStorage.getItem('volume') || '1')
-    : 0.3,
-  muted: false,
-  repeat: false,
-  shuffle: false
+    : 1,
+  muted: localStorage.getItem('muted')
+    ? JSON.parse(localStorage.getItem('muted') || 'false')
+    : false,
+  repeat: localStorage.getItem('repeat')
+    ? JSON.parse(localStorage.getItem('repeat') || 'false')
+    : false,
+  shuffle: localStorage.getItem('shuffle')
+    ? JSON.parse(localStorage.getItem('shuffle') || 'false')
+    : false
 }
 
 export const configClientSlice = createSlice({
