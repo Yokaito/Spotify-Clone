@@ -1,7 +1,8 @@
 import axios from 'axios'
 import React from 'react'
-import { useAppDispatch } from 'store/hooks'
-import { setCurrentSong } from 'store/slices/currentSongSlice'
+import { useAppDispatch, useAppSelector } from 'store/hooks'
+import { setCurrentSong, getCurrentSong } from 'store/slices/currentSongSlice'
+import { getCurrentPlaylist } from 'store/slices/currentPlaylistSlice'
 
 import { ButtonChangeMusicStyled } from './styles'
 
@@ -15,10 +16,26 @@ export const ButtonChangeMusic: React.FC<ButtonChangeMusicProps> = ({
   next
 }) => {
   const dispatch = useAppDispatch()
+  const { songs } = useAppSelector(state => getCurrentPlaylist(state))
+  const { id } = useAppSelector(state => getCurrentSong(state))
   const handleClick = async () => {
-    const id = next ? 2 : 1
-    const response = await axios.get(`/api/songs/${id}`)
-    dispatch(setCurrentSong({ ...response.data.song }))
+    songs.forEach(async song => {
+      if (song.id === id) {
+        if (next) {
+          const nextSong = songs[songs.indexOf(song) + 1]
+          if (nextSong) {
+            const response = await axios.get(`/api/songs/${nextSong.id}`)
+            dispatch(setCurrentSong({ ...response.data.song }))
+          }
+        } else {
+          const previousSong = songs[songs.indexOf(song) - 1]
+          if (previousSong) {
+            const response = await axios.get(`/api/songs/${previousSong.id}`)
+            dispatch(setCurrentSong({ ...response.data.song }))
+          }
+        }
+      }
+    })
   }
 
   return (

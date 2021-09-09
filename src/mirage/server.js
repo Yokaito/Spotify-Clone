@@ -22,10 +22,17 @@ export default function () {
         title: 'STAY (with Justin Bieber)',
         artists: ['The Kid LAROI', 'Justin Bieber']
       })
+      server.create('song', {
+        id: 3,
+        url: '/3/music.mp3',
+        image: '/3/image.jpg',
+        title: 'Ansel Elgort - Supernova',
+        artists: ['Ansel Elgort']
+      })
       server.create('playlist', {
         id: 1,
         title: 'My Playlist',
-        songs: [1, 2]
+        songs: [3, 1, 2]
       })
     },
 

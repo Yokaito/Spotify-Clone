@@ -90,12 +90,20 @@ const useAudioPlayer = (url: string): useAudioPlayerResult => {
 
   useEffect(() => {
     async function setNextSong() {
-      const idPlus = currentSong.id
-      const nextSong = currentPlaylist.songs[idPlus]
-      if (nextSong) {
-        const response = await axios.get(`/api/songs/${nextSong.id}`)
-        dispatch(setCurrentSongRedux({ ...response.data.song }))
-      }
+      currentPlaylist.songs.forEach(async (song, index) => {
+        if (song.id === currentSong.id) {
+          const nextSong = currentPlaylist.songs[index + 1]
+          if (nextSong) {
+            const response = await axios.get(`/api/songs/${nextSong.id}`)
+            dispatch(setCurrentSongRedux({ ...response.data.song }))
+          } else {
+            const response = await axios.get(
+              `/api/songs/${currentPlaylist.songs[0].id}`
+            )
+            dispatch(setCurrentSongRedux({ ...response.data.song }))
+          }
+        }
+      })
     }
 
     audio.addEventListener('ended', setNextSong)

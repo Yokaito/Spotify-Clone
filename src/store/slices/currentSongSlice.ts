@@ -38,7 +38,7 @@ export const currentSongSlice = createSlice({
       localStorage.setItem('currentSongId', action.payload.id.toString())
       return {
         ...state,
-        id: action.payload.id,
+        id: parseInt(action.payload.id.toString()),
         url: action.payload.url,
         image: action.payload.image,
         title: action.payload.title,
